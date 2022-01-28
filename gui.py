@@ -274,6 +274,7 @@ def main():
     turtle.onscreenclick(gui.on_left_click, 1, True)
     turtle.onkeypress(gui.bfs, 'b')
     screen.listen()
+    screen.cv.unbind("<Motion>")
     gui.draw()
 
     turtle.mainloop()
