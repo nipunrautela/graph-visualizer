@@ -1,6 +1,24 @@
+from time import time, sleep
+
 from graph import Graph
 import turtle
 from math import sqrt
+
+
+class Stats:
+    def __init__(self):
+        self.count = 0
+        self.last_update = time()
+        self.head = turtle.Turtle()
+        self.head.hideturtle()
+
+    def show_fps(self):
+        self.count += 1
+        self.head.pu()
+        self.head.clear()
+        fps = round(self.count / (time() - self.last_update + 1), 2)
+        self.head.goto(-460, 380)
+        self.head.write(str(fps))
 
 
 class Node:
@@ -61,14 +79,14 @@ class Edge:
 
     def exist(self, x, y):
         try:
-            m = (self.n2.y-self.n1.y)/(self.n2.x-self.n1.x)
+            m = (self.n2.y - self.n1.y) / (self.n2.x - self.n1.x)
         except ZeroDivisionError:
-            m = (self.n2.y-self.n1.y)/float("-inf")
+            m = (self.n2.y - self.n1.y) / float("-inf")
         a = m
         b = -1
-        c = self.n1.y - (m*self.n1.x)
-        
-        distance = (a*x + b*y + c)/sqrt(a**2 + b**2)
+        c = self.n1.y - (m * self.n1.x)
+
+        distance = (a * x + b * y + c) / sqrt(a ** 2 + b ** 2)
         if distance < Edge.EDGE_SIZE:
             return True
         return False
@@ -87,6 +105,8 @@ class GraphGui:
         self.selected_node = None
         self.selected_edge = None
 
+        self.stats = Stats()
+
     def _create_node(self, x, y):
         new_node = Node(x, y, self.turtle)
         self.graph.addNode(new_node.id)
@@ -99,42 +119,45 @@ class GraphGui:
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
 
     def on_left_click(self, x, y):
-        clicked_node = False
-        clicked_edge = False
+        clicked_node = None
+
         for k in self.nodes.keys():
             if self.nodes[k].exist(x, y):
-                clicked_node = True
-                print("Node", self.nodes[k].id, "clicked!")
-                if self.nodes[k] is self.selected_node:
-                    self.nodes[k].selected = False
-                    self.selected_node = None
-                else:
-                    self.nodes[k].selected = True
-                    self.selected_node = self.nodes[k]
-
-        if not clicked_node:
+                clicked_node = k
+        if clicked_node is None:
             node_id = self._create_node(x, y)
             if self.selected_node is not None:
-                self.selected_node.selected = False
-            self.selected_node = self.nodes[node_id]
+                self.nodes[self.selected_node].selected = False
+            self.selected_node = node_id
             self.nodes[node_id].selected = True
+        else:
+            if clicked_node == self.selected_node:
+                self.nodes[clicked_node].selected = False
+                self.selected_node = None
+            else:
+                if self.selected_node is not None:
+                    self.nodes[self.selected_node].selected = False
+                self.nodes[clicked_node].selected = True
+                self.selected_node = clicked_node
+
+        clicked_edge = None
 
         for k in self.edges.keys():
             if self.edges[k].exist(x, y):
                 clicked_edge = True
                 if self.edges[k] is self.selected_edge:
                     self.edges[k].selected = False
-                    self.selected_edge.selected = False
+                    self.edges[self.selected_edge].selected = False
                     self.selected_edge = None
                 else:
                     self.edges[k].selected = True
-                    self.selected_edge = self.edges[k]
+                    self.selected_edge = k
 
     def draw(self):
         turtle.update()
         self.turtle.clear()
-        self.turtle.hideturtle()
-        turtle.ontimer(self.draw, 16)
+        self.stats.show_fps()
+        turtle.ontimer(self.draw, 20)
         for k in self.nodes.keys():
             self.nodes[k].draw()
         for k in self.edges.keys():
@@ -143,7 +166,9 @@ class GraphGui:
 
 def main():
     turtle.tracer(False)
+    turtle.hideturtle()
     screen = turtle.getscreen()
+    turtle.screensize(800, 800)
     screen.bgcolor("grey")
 
     gui = GraphGui(screen)
