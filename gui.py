@@ -1,15 +1,15 @@
-from platform import node
-import graph as G
+from graph import Graph
 import turtle
 from math import sqrt
 
 
 class Node:
+    NODE_SIZE = 7
+
     def __init__(self, num: int, x, y):
         self.id = num
         self.x = x
         self.y = y
-        self.NODE_SIZE = 7
         self.turtle = turtle.Turtle()
         self.turtle.hideturtle()
         self.turtle.penup()
@@ -17,19 +17,19 @@ class Node:
 
     def draw(self):
         self.turtle.goto(self.x, self.y)
-        self.turtle.pensize(self.NODE_SIZE)
+        self.turtle.pensize(Node.NODE_SIZE)
         self.turtle.dot()
         self.turtle.pensize(1)
 
     def exist(self, x, y):
         dis = sqrt((self.x-x)**2+(self.y-y)**2)
-        if dis < self.NODE_SIZE:
+        if dis < Node.NODE_SIZE:
             return True
         return False
 
 
 turtle.tracer(False)
-graph = G.Graph()
+graph = Graph()
 head = turtle.Turtle()
 ok = turtle.Screen()
 head.hideturtle()
