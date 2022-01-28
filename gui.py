@@ -27,6 +27,7 @@ class Stats:
 class Node:
     id = 0
     NODE_SIZE = 12
+    FONT_SIZE = 10
 
     def __init__(self, x, y, tur):
         self.id = Node.id
@@ -49,7 +50,10 @@ class Node:
         self.turtle.goto(self.x, self.y)
         self.turtle.pensize(Node.NODE_SIZE)
         self.turtle.dot()
-        self.turtle.pensize(1)
+
+        self.turtle.goto(self.x, self.y-Node.FONT_SIZE)
+        self.turtle.color("black")
+        # self.turtle.write(str(self.id), True, font=("Arial", Node.FONT_SIZE, "normal"))
 
     def exist(self, x, y):
         dis = sqrt((self.x - x) ** 2 + (self.y - y) ** 2)
@@ -113,6 +117,7 @@ class GraphGui:
         self.turtle.hideturtle()
         self.screen = screen
 
+        self.busy = False # tells if the class is working on a function
         self.selected_node = None
         self.selected_edge = None
 
@@ -146,6 +151,9 @@ class GraphGui:
         return False
 
     def on_left_click(self, x, y):
+        if self.busy:
+            return
+
         clicked_node = None
         for k in self.nodes.keys():
             if self.nodes[k].exist(x, y):
@@ -172,7 +180,6 @@ class GraphGui:
                 if self.selected_node is not None:
                     if not self.edge_exist(self.selected_node, clicked_node):
                         self._create_edge(self.nodes[self.selected_node], self.nodes[clicked_node])
-                        print("Edge created")
                     self.nodes[self.selected_node].selected = False
                 if self.selected_edge is not None:
                     self.edges[self.selected_edge].selected = False
@@ -196,18 +203,30 @@ class GraphGui:
                 self.selected_edge = clicked_edge
             return
 
+    def bfs(self):
+        self.turtle.goto(300, 20)
+        starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+        to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        order = self.graph.bfs(starting_node, to_find)
+        print(order)
+        for i in order:
+            pass
+
+        turtle.onkeypress(self.bfs, 'b')
+        self.screen.listen()
+
     def draw(self):
         try:
             self.turtle.clear()
             turtle.update()
             self.stats.show_fps()
-            turtle.ontimer(self.draw, 50)
+            turtle.ontimer(self.draw, 30)
         except Exception:
             print("Exiting...")
-        for k in self.nodes.keys():
-            self.nodes[k].draw()
         for k in self.edges.keys():
             self.edges[k].draw()
+        for k in self.nodes.keys():
+            self.nodes[k].draw()
 
 
 def main():
@@ -219,8 +238,9 @@ def main():
     screen.bgcolor("grey")
 
     gui = GraphGui(screen)
-    screen.listen()
     turtle.onscreenclick(gui.on_left_click, 1, True)
+    turtle.onkeypress(gui.bfs, 'b')
+    screen.listen()
     gui.draw()
 
     turtle.mainloop()

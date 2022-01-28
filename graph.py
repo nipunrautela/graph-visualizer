@@ -60,7 +60,7 @@ class Graph(GraphInterface):
     def graph(self):
         return self._graph
 
-    def bfs(self, s):
+    def bfs(self, s, e):
         visited = [False] * (max(self.graph) + 1)
         queue = [s]
         visited[s] = True
@@ -69,6 +69,8 @@ class Graph(GraphInterface):
         while queue:
             s = queue.pop(0)
             order.append(s)
+            if s == e:
+                break
             for i in self.graph[s]:
                 if not visited[i]:
                     queue.append(i)
