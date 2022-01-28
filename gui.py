@@ -248,12 +248,11 @@ class GraphGui:
     def draw(self):
         try:
             if self.busy:
-                self.turtle.clear()
                 return
             self.turtle.clear()
             turtle.update()
             self.stats.show_fps()
-            turtle.ontimer(self.draw, 20)
+            turtle.ontimer(self.draw, 25)
         except Exception:
             print("Exiting...")
         for k in self.edges.keys():
