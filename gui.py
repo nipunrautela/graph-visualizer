@@ -32,7 +32,8 @@ class Node:
         self.y = y
         self.selected = False
 
-        self.turtle = tur
+        self.turtle = turtle.Turtle()
+        self.turtle.hideturtle()
         self.turtle.penup()
         self.draw()
 
@@ -108,6 +109,9 @@ class GraphGui:
         self.stats = Stats()
 
     def _create_node(self, x, y):
+        # if len(self.nodes) % 3 == 0:
+        #     self.turtle = turtle.Turtle()
+        #     self.turtle.hideturtle()
         new_node = Node(x, y, self.turtle)
         self.graph.addNode(new_node.id)
         self.nodes[new_node.id] = new_node
@@ -157,7 +161,7 @@ class GraphGui:
         turtle.update()
         self.turtle.clear()
         self.stats.show_fps()
-        turtle.ontimer(self.draw, 20)
+        turtle.ontimer(self.draw, 16)
         for k in self.nodes.keys():
             self.nodes[k].draw()
         for k in self.edges.keys():
