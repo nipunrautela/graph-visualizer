@@ -5,8 +5,8 @@ from math import sqrt
 
 
 class Node:
-    def __init__(self, id: int, x, y):
-        self.id = id
+    def __init__(self, num: int, x, y):
+        self.id = num
         self.x = x
         self.y = y
         self.NODE_SIZE = 7
