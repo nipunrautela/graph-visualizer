@@ -60,18 +60,33 @@ class Graph(GraphInterface):
     def graph(self):
         return self._graph
 
+    def bfs(self, s):
+        visited = [False] * (max(self.graph) + 1)
+        queue = [s]
+        visited[s] = True
+        order = []
 
-graph = Graph()
-graph.addNode(0)
-graph.addNode(1)
-graph.addNode(2)
-graph.addNode(3)
-graph.addNode(4)
-graph.addEdge(0, 1)
-graph.addEdge(0, 3)
-graph.addEdge(1, 2)
-graph.addEdge(3, 2)
-graph.addEdge(2, 4)
-graph.deleteEdge(0,2)
-print(graph.getAdjacentEdges(1, 2))
+        while queue:
+            s = queue.pop(0)
+            order.append(s)
+            for i in self.graph[s]:
+                if not visited[i]:
+                    queue.append(i)
+                    visited[i] = True
+        return order
 
+
+# graph = Graph()
+# graph.addNode(0)
+# graph.addNode(1)
+# graph.addNode(2)
+# graph.addNode(3)
+# graph.addNode(4)
+# graph.addEdge(0, 1)
+# graph.addEdge(0, 3)
+# graph.addEdge(1, 2)
+# graph.addEdge(3, 2)
+# graph.addEdge(2, 4)
+# graph.deleteEdge(0, 2)
+# print(graph.getAdjacentEdges(1, 2))
+# print(graph.bfs(0))
