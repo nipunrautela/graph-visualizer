@@ -18,7 +18,7 @@ class Stats:
         self.head.clear()
         fps = round(self.count / (time() - self.last_update + 1), 2)
         self.head.goto(-460, 380)
-        self.head.write(str(fps))
+        self.head.write(str(fps), True, font=('Arial', 10, 'normal'))
 
 
 class Node:
