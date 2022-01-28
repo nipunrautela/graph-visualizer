@@ -1,4 +1,4 @@
-from time import time, sleep
+from time import time
 
 from graph import Graph
 import turtle
@@ -14,6 +14,9 @@ class Stats:
 
     def show_fps(self):
         self.count += 1
+        if self.last_update-time() == 1000:
+            self.count = 0
+            self.last_update = time()
         self.head.pu()
         self.head.clear()
         fps = round(self.count / (time() - self.last_update + 1), 2)
@@ -33,15 +36,15 @@ class Node:
         self.selected = False
 
         self.turtle = turtle.Turtle()
+        # self.turtle = tur
         self.turtle.hideturtle()
         self.turtle.penup()
-        self.draw()
 
     def draw(self):
         if self.selected:
             self.turtle.color("green")
         else:
-            self.turtle.color("white")
+            self.turtle.color("#ffffff")
 
         self.turtle.goto(self.x, self.y)
         self.turtle.pensize(Node.NODE_SIZE)
@@ -56,19 +59,21 @@ class Node:
 
 
 class Edge:
-    EDGE_SIZE = 3
+    EDGE_SIZE = 8
 
     def __init__(self, n1: Node, n2: Node, tur):
         self.n1 = n1
         self.n2 = n2
         self.selected = False
 
-        self.turtle = tur
-        self.draw()
+        # self.turtle = tur
+        self.turtle = turtle.Turtle()
+        self.turtle.hideturtle()
+        self.turtle.speed(0)
 
     def draw(self):
         if self.selected:
-            self.turtle.color("green")
+            self.turtle.color("blue")
         else:
             self.turtle.color("black")
 
@@ -77,6 +82,7 @@ class Edge:
         self.turtle.goto(self.n1.x, self.n1.y)
         self.turtle.pd()
         self.turtle.goto(self.n2.x, self.n2.y)
+        self.turtle.pu()
 
     def exist(self, x, y):
         try:
@@ -87,8 +93,12 @@ class Edge:
         b = -1
         c = self.n1.y - (m * self.n1.x)
 
-        distance = (a * x + b * y + c) / sqrt(a ** 2 + b ** 2)
-        if distance < Edge.EDGE_SIZE:
+        length = sqrt((self.n2.x - self.n1.x) ** 2 + (self.n2.y - self.n1.y) ** 2)
+        distance_from_line = abs(a * x + b * y + c) / sqrt(a ** 2 + b ** 2)
+        center_x = (self.n2.x + self.n1.x)/2
+        center_y = (self.n2.y + self.n1.y)/2
+        distance_from_center = sqrt((x - center_x) ** 2 + (y - center_y) ** 2)
+        if distance_from_line < Edge.EDGE_SIZE and distance_from_center <= length / 2:
             return True
         return False
 
@@ -118,50 +128,82 @@ class GraphGui:
         return new_node.id
 
     def _create_edge(self, n1, n2):
+        if n1.id > n2.id:
+            temp = n1
+            n1 = n2
+            n2 = temp
         new_edge = Edge(n1, n2, self.turtle)
         self.graph.addEdge(n1.id, n2.id)
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
 
+    def edge_exist(self, id1, id2):
+        if id1 > id2:
+            temp = id1
+            id1 = id2
+            id2 = temp
+        if str(id1)+','+str(id2) in self.edges.keys():
+            return True
+        return False
+
     def on_left_click(self, x, y):
         clicked_node = None
-
         for k in self.nodes.keys():
             if self.nodes[k].exist(x, y):
                 clicked_node = k
+
+        clicked_edge = None
+        for k in self.edges.keys():
+            if self.edges[k].exist(x, y):
+                clicked_edge = k
+
         if clicked_node is None:
-            node_id = self._create_node(x, y)
-            if self.selected_node is not None:
-                self.nodes[self.selected_node].selected = False
-            self.selected_node = node_id
-            self.nodes[node_id].selected = True
+            if clicked_edge is None:
+                node_id = self._create_node(x, y)
+                if self.selected_node is not None:
+                    self.nodes[self.selected_node].selected = False
+                    self._create_edge(self.nodes[self.selected_node], self.nodes[node_id])
+                self.selected_node = node_id
+                self.nodes[node_id].selected = True
         else:
             if clicked_node == self.selected_node:
                 self.nodes[clicked_node].selected = False
                 self.selected_node = None
             else:
                 if self.selected_node is not None:
+                    if not self.edge_exist(self.selected_node, clicked_node):
+                        self._create_edge(self.nodes[self.selected_node], self.nodes[clicked_node])
+                        print("Edge created")
                     self.nodes[self.selected_node].selected = False
+                if self.selected_edge is not None:
+                    self.edges[self.selected_edge].selected = False
                 self.nodes[clicked_node].selected = True
                 self.selected_node = clicked_node
+            return
 
-        clicked_edge = None
-
-        for k in self.edges.keys():
-            if self.edges[k].exist(x, y):
-                clicked_edge = True
-                if self.edges[k] is self.selected_edge:
-                    self.edges[k].selected = False
+        if clicked_edge is None:
+            pass
+        else:
+            if clicked_edge == self.selected_edge:
+                self.edges[clicked_edge].selected = False
+                self.edges[self.selected_edge].selected = False
+                self.selected_edge = None
+            else:
+                if self.selected_node is not None:
+                    self.nodes[self.selected_node].selected = False
+                if self.selected_edge is not None:
                     self.edges[self.selected_edge].selected = False
-                    self.selected_edge = None
-                else:
-                    self.edges[k].selected = True
-                    self.selected_edge = k
+                self.edges[clicked_edge].selected = True
+                self.selected_edge = clicked_edge
+            return
 
     def draw(self):
-        turtle.update()
-        self.turtle.clear()
-        self.stats.show_fps()
-        turtle.ontimer(self.draw, 16)
+        try:
+            self.turtle.clear()
+            turtle.update()
+            self.stats.show_fps()
+            turtle.ontimer(self.draw, 50)
+        except Exception:
+            print("Exiting...")
         for k in self.nodes.keys():
             self.nodes[k].draw()
         for k in self.edges.keys():
@@ -169,7 +211,8 @@ class GraphGui:
 
 
 def main():
-    turtle.tracer(False)
+    turtle.tracer(0, 0)
+    turtle.speed('fastest')
     turtle.hideturtle()
     screen = turtle.getscreen()
     turtle.screensize(800, 800)
@@ -180,7 +223,7 @@ def main():
     turtle.onscreenclick(gui.on_left_click, 1, True)
     gui.draw()
 
-    turtle.done()
+    turtle.mainloop()
 
 
 main()
