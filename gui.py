@@ -1,4 +1,4 @@
-from time import time, sleep
+from time import time
 
 from graph import Graph
 import turtle
@@ -17,8 +17,8 @@ class Stats:
         self.head.pu()
         self.head.clear()
         fps = round(self.count / (time() - self.last_update + 1), 2)
-        self.head.goto(-460, 380)
-        self.head.write(str(fps))
+        self.head.goto(-470, 380)
+        self.head.write(str(fps), True, font=('Arial', 10, 'normal'))
 
 
 class Node:
