@@ -1,4 +1,5 @@
-from time import time
+from time import time, sleep
+import asyncio
 
 from graph import Graph
 import turtle
@@ -10,14 +11,14 @@ class Stats:
         self.count = 0
         self.last_update = time()
         self.head = turtle.Turtle()
+        self.head.pu()
         self.head.hideturtle()
 
     def show_fps(self):
         self.count += 1
-        if self.last_update-time() == 1000:
-            self.count = 0
+        if self.count >= 100000000:
+            self.count = 100
             self.last_update = time()
-        self.head.pu()
         self.head.clear()
         fps = round(self.count / (time() - self.last_update + 1), 2)
         self.head.goto(-460, 380)
@@ -51,7 +52,7 @@ class Node:
         self.turtle.pensize(Node.NODE_SIZE)
         self.turtle.dot()
 
-        self.turtle.goto(self.x, self.y-Node.FONT_SIZE)
+        self.turtle.goto(self.x, self.y - Node.FONT_SIZE)
         self.turtle.color("black")
         # self.turtle.write(str(self.id), True, font=("Arial", Node.FONT_SIZE, "normal"))
 
@@ -99,8 +100,8 @@ class Edge:
 
         length = sqrt((self.n2.x - self.n1.x) ** 2 + (self.n2.y - self.n1.y) ** 2)
         distance_from_line = abs(a * x + b * y + c) / sqrt(a ** 2 + b ** 2)
-        center_x = (self.n2.x + self.n1.x)/2
-        center_y = (self.n2.y + self.n1.y)/2
+        center_x = (self.n2.x + self.n1.x) / 2
+        center_y = (self.n2.y + self.n1.y) / 2
         distance_from_center = sqrt((x - center_x) ** 2 + (y - center_y) ** 2)
         if distance_from_line < Edge.EDGE_SIZE and distance_from_center <= length / 2:
             return True
@@ -117,7 +118,7 @@ class GraphGui:
         self.turtle.hideturtle()
         self.screen = screen
 
-        self.busy = False # tells if the class is working on a function
+        self.busy = False  # tells if the class is working on a function
         self.selected_node = None
         self.selected_edge = None
 
@@ -146,7 +147,7 @@ class GraphGui:
             temp = id1
             id1 = id2
             id2 = temp
-        if str(id1)+','+str(id2) in self.edges.keys():
+        if str(id1) + ',' + str(id2) in self.edges.keys():
             return True
         return False
 
@@ -204,23 +205,55 @@ class GraphGui:
             return
 
     def bfs(self):
-        self.turtle.goto(300, 20)
+        self.busy = True
         starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
         to_find = int(turtle.numinput("End Node", "Which node to find", 0))
         order = self.graph.bfs(starting_node, to_find)
-        print(order)
+
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
         for i in order:
-            pass
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
+        tur = self.turtle
+        tur.ht()
+        tur.pu()
+        tur.goto(300, 20)
+        tur.write(str(order), font=("Arial", 10, "normal"))
+        tur.goto(300, 0)
+        tur.write("resuming program in 10 second", font=("Arial", 10, "normal"))
+        sleep(10)
+
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
 
         turtle.onkeypress(self.bfs, 'b')
+        turtle.onkeypress(self.draw, 'r')
         self.screen.listen()
+        self.busy = False
 
     def draw(self):
         try:
+            if self.busy:
+                self.turtle.clear()
+                return
             self.turtle.clear()
             turtle.update()
             self.stats.show_fps()
-            turtle.ontimer(self.draw, 30)
+            turtle.ontimer(self.draw, 20)
         except Exception:
             print("Exiting...")
         for k in self.edges.keys():
