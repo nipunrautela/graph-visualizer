@@ -42,6 +42,9 @@ class Node:
         self.turtle.hideturtle()
         self.turtle.penup()
 
+    def clear(self):
+        self.turtle.clear()
+
     def draw(self):
         if self.selected:
             self.turtle.color("green")
@@ -88,6 +91,9 @@ class Edge:
         self.turtle.pd()
         self.turtle.goto(self.n2.x, self.n2.y)
         self.turtle.pu()
+
+    def clear(self):
+        self.turtle.clear()
 
     def exist(self, x, y):
         try:
@@ -141,6 +147,29 @@ class GraphGui:
         new_edge = Edge(n1, n2, self.turtle)
         self.graph.addEdge(n1.id, n2.id)
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
+
+    def delete(self):
+        if self.selected_node is not None:
+            self.graph.deleteNode(self.selected_node)
+            to_delete = []
+            for k in self.edges:
+                if str(self.selected_node) in k:
+                    to_delete.append(k)
+            for k in to_delete:
+                self.edges[k].clear()
+                del self.edges[k]
+            self.nodes[self.selected_node].clear()
+            del self.nodes[self.selected_node]
+            self.selected_node = None
+            return
+        if self.selected_edge is not None:
+            self.graph.deleteEdge(int(self.selected_edge.split(",")[0]), int(self.selected_edge.split(",")[1]))
+            self.edges[self.selected_edge].clear()
+            del self.edges[self.selected_edge]
+            self.selected_edge = None
+
+        turtle.onscreenclick(self.on_left_click, 1, True)
+        turtle.listen()
 
     def edge_exist(self, id1, id2):
         if id1 > id2:
@@ -252,7 +281,7 @@ class GraphGui:
             self.turtle.clear()
             turtle.update()
             self.stats.show_fps()
-            turtle.ontimer(self.draw, 25)
+            turtle.ontimer(self.draw, 50)
         except Exception:
             print("Exiting...")
         for k in self.edges.keys():
@@ -272,6 +301,7 @@ def main():
     gui = GraphGui(screen)
     turtle.onscreenclick(gui.on_left_click, 1, True)
     turtle.onkeypress(gui.bfs, 'b')
+    turtle.onkeypress(gui.delete, 'd')
     screen.listen()
     screen.cv.unbind("<Motion>")
     gui.draw()
