@@ -235,8 +235,13 @@ class GraphGui:
 
     def bfs(self):
         self.busy = True
-        starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
-        to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        try:
+            starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+            to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        except TypeError:
+            self.busy = False
+            return
+
         order = self.graph.BFS(starting_node, to_find)
 
         if self.selected_node is not None:
@@ -262,8 +267,8 @@ class GraphGui:
         tur.goto(300, 20)
         tur.write(str(order), font=("Arial", 10, "normal"))
         tur.goto(300, 0)
-        tur.write("resuming program in 10 second", font=("Arial", 10, "normal"))
-        sleep(10)
+        tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
+        sleep(1)
 
         self.selected_node = None
         for k in self.nodes.keys():
@@ -276,8 +281,13 @@ class GraphGui:
 
     def dfs(self):
         self.busy = True
-        starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
-        to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        try:
+            starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+            to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        except TypeError:
+            self.busy = False
+            return
+
         order = self.graph.DFS(starting_node, to_find)
 
         if self.selected_node is not None:
@@ -303,8 +313,8 @@ class GraphGui:
         tur.goto(300, 20)
         tur.write(str(order), font=("Arial", 10, "normal"))
         tur.goto(300, 0)
-        tur.write("resuming program in 10 second", font=("Arial", 10, "normal"))
-        sleep(10)
+        tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
+        sleep(1)
 
         self.selected_node = None
         for k in self.nodes.keys():
@@ -334,6 +344,7 @@ class GraphGui:
 def main():
     turtle.tracer(0, 0)
     turtle.speed('fastest')
+    turtle.mode("world")
     turtle.hideturtle()
     screen = turtle.getscreen()
     turtle.screensize(800, 800)
