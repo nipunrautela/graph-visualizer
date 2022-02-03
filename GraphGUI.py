@@ -131,6 +131,7 @@ class GraphGui:
 
         self.stats = Stats()
 
+    #author Subhadip Nandi
     def _create_node(self, x, y):
         # if len(self.nodes) % 3 == 0:
         #     self.turtle = turtle.Turtle()
@@ -140,6 +141,7 @@ class GraphGui:
         self.nodes[new_node.id] = new_node
         return new_node.id
 
+    #author Subhadip Nandi
     def _create_edge(self, n1, n2):
         if n1.id > n2.id:
             temp = n1
@@ -149,6 +151,7 @@ class GraphGui:
         self.graph.addEdge(n1.id, n2.id)
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
 
+    #author Subhadip Nandi
     def delete(self):
         if self.selected_node is not None:
             self.graph.deleteNode(self.selected_node)
@@ -235,13 +238,14 @@ class GraphGui:
             return
 
     def bfs(self):
+        self.busy = True
         try:
             starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
             to_find = int(turtle.numinput("End Node", "Which node to find", 0))
         except TypeError:
+            self.busy = False
             return
 
-        self.busy = True
         order = self.graph.BFS(starting_node, to_find)
 
         if self.selected_node is not None:
@@ -332,7 +336,7 @@ class GraphGui:
                 return
             self.turtle.clear()
             turtle.update()
-            # self.stats.show_fps()
+            self.stats.show_fps()
             turtle.ontimer(self.draw, 50)
         except Exception:
             print("Exiting...")
