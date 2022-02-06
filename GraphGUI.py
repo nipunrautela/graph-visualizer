@@ -330,6 +330,9 @@ class GraphGui:
         turtle.onkeypress(self.draw, 'r')
         self.screen.listen()
         self.busy = False
+        
+    def AnimateShortestPath(self):
+        pass
 
     def draw(self):
         try:
