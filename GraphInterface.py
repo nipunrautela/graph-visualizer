@@ -30,4 +30,18 @@ class GraphInterface:
     @abstractmethod
     def updateWeight(self, v1, v2, weight):
         pass
+    
+    @abstractmethod
+    def BFS(self, start, destination):
+        pass
+    
+    @abstractmethod
+    def DFS(self, start, destination):
+        pass
+    
+    @abstractmethod
+    def FindShortestPath(self, start, destination):
+        pass
+    
+    
 
