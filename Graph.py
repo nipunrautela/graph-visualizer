@@ -113,6 +113,9 @@ class Graph(GraphInterface):
         for i in self._graph[v2]:
             if i[0] == v1:
                 i[1] = weight
+                
+    def FindShortestPath(self, start, destination):
+        pass
 
     @property
     def graph(self):
