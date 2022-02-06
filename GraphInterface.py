@@ -1,12 +1,14 @@
 #author Piyush Mudgal
 from abc import abstractmethod
+
+
 class GraphInterface:
     @abstractmethod
     def addNode(self, node):
         pass
 
     @abstractmethod
-    def addEdge(self, v1, v2):
+    def addEdge(self, v1, v2, weight):
         pass
 
     @abstractmethod
@@ -24,3 +26,8 @@ class GraphInterface:
     @abstractmethod
     def getAdjacentEdges(self, v1, v2):
         pass
+
+    @abstractmethod
+    def updateWeight(self, v1, v2, weight):
+        pass
+
