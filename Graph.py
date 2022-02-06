@@ -11,11 +11,11 @@ class Graph(GraphInterface):
             self._graph[node] = []
 
     # Function to add New Edge to Graph
-    def addEdge(self, v1, v2):
+    def addEdge(self, v1, v2, weight):
         if v1 not in self._graph or v2 not in self._graph:
             return False
-        self._graph[v1].append(v2)
-        self._graph[v2].append(v1)
+        self._graph[v1].append([v2, weight])
+        self._graph[v2].append([v1, weight])
 
     # Function to Delete a Pre-existing Node
     def deleteNode(self, node):
@@ -91,14 +91,13 @@ class Graph(GraphInterface):
         path.reverse()
         return path
 
-    #author Desharaju Sai Abhishek
-    def DFS(self, start, dest):
+    def DFS(self, start, destination):
         stack = [[start]]
         visited = [0]
         while stack:
             path = stack.pop(0)
             node = path[-1]
-            if node == dest:
+            if node == destination:
                 return path
             children = self._graph[node]
             for child in children:
@@ -106,6 +105,14 @@ class Graph(GraphInterface):
                     newPath = path + [child]
                     stack.insert(0, newPath)
                     visited.append(child)
+
+    def updateWeight(self, v1, v2, weight):
+        for i in self._graph[v1]:
+            if i[0]==v2:
+                i[1]=weight
+        for i in self._graph[v2]:
+            if i[0] == v1:
+                i[1] = weight
 
     @property
     def graph(self):
