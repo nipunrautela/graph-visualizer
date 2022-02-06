@@ -148,7 +148,8 @@ class GraphGui:
             n1 = n2
             n2 = temp
         new_edge = Edge(n1, n2, self.turtle)
-        self.graph.addEdge(n1.id, n2.id)
+        weight = turtle.numinput("Edge Weight", "Enter edge weight")
+        self.graph.addEdge(n1.id, n2.id, weight)
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
 
     #author Subhadip Nandi
