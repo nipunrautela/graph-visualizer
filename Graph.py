@@ -1,4 +1,4 @@
-#author Piyush Mudgal
+# author Piyush Mudgal
 from GraphInterface import GraphInterface
 
 
@@ -8,14 +8,14 @@ class Graph(GraphInterface):
     # Function to add a New Node to Graph
     def addNode(self, node):
         if node not in self._graph:
-            self._graph[node] = []
+            self._graph[node] = {}
 
     # Function to add New Edge to Graph
     def addEdge(self, v1, v2, weight):
         if v1 not in self._graph or v2 not in self._graph:
             return False
-        self._graph[v1].append([v2, weight])
-        self._graph[v2].append([v1, weight])
+        self._graph[v1][v2] = weight
+        self._graph[v2][v1] = weight
 
     # Function to Delete a Pre-existing Node
     def deleteNode(self, node):
@@ -23,16 +23,15 @@ class Graph(GraphInterface):
             return False
         del self._graph[node]
         for i in self._graph:
-            for j in self._graph[i]:
-                if j == node:
-                    self._graph[i].remove(j)
+            if node in self._graph[i]:
+                del self._graph[i][node]
 
     # Function to Delete a Pre-Existing Edge
     def deleteEdge(self, v1, v2):
         if v1 not in self._graph or v2 not in self._graph or v2 not in self._graph[v1] or v1 not in self._graph[v2]:
             return False
-        self._graph[v1].remove(v2)
-        self._graph[v2].remove(v1)
+        del self._graph[v1][v2]
+        del self._graph[v2][v1]
 
     # Function to Get Adjacent Node of a Node
     def getAdjacentNodes(self, v1):
@@ -70,22 +69,21 @@ class Graph(GraphInterface):
         Queue = [start]  # Queue used for BFS
         visited[start] = 1
         parent[start] = -1
+        # nodes = [start]
         while Queue:
             current = Queue.pop(0)
             if current == destination:
                 break
             for i in self._graph[current]:
                 if visited[i] == 0:
-                    Queue.append(i)
+                    Queue.append(i[0])
                     visited[i] = 1
                     parent[i] = current
 
         cur = destination
-        distance = 0
         path = []
         while parent[cur] != -1:
             path.append(cur)
-            distance += 1
             cur = parent[cur]
         path.append(start)
         path.reverse()
@@ -107,13 +105,9 @@ class Graph(GraphInterface):
                     visited.append(child)
 
     def updateWeight(self, v1, v2, weight):
-        for i in self._graph[v1]:
-            if i[0]==v2:
-                i[1]=weight
-        for i in self._graph[v2]:
-            if i[0] == v1:
-                i[1] = weight
-                
+        self._graph[v1][v2] = weight
+        self._graph[v2][v1] = weight
+
     def FindShortestPath(self, start, destination):
         pass
 
