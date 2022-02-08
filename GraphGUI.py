@@ -149,8 +149,10 @@ class GraphGui:
             n2 = temp
         new_edge = Edge(n1, n2, self.turtle)
         weight = turtle.numinput("Edge Weight", "Enter edge weight")
+        # weight = 5
         self.graph.addEdge(n1.id, n2.id, weight)
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
+        turtle.listen()
 
     #author Subhadip Nandi
     def delete(self):
@@ -281,7 +283,7 @@ class GraphGui:
 
         turtle.onkeypress(self.bfs, 'b')
         turtle.onkeypress(self.draw, 'r')
-        self.screen.listen()
+        turtle.listen()
         self.busy = False
 
         #author Piyush Mudgal
@@ -328,7 +330,7 @@ class GraphGui:
 
         turtle.onkeypress(self.dfs, 'x')
         turtle.onkeypress(self.draw, 'r')
-        self.screen.listen()
+        turtle.listen()
         self.busy = False
         
     def AnimateShortestPath(self):
