@@ -256,7 +256,28 @@ class GraphGui:
             self.edges[self.selected_edge].selected = False
             self.selected_edge = None
 
-        for i in order:
+        for i in order[0]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
+
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
+        for i in order[1]:
             self.selected_node = i
             self.nodes[self.selected_node].selected = True
             for k in self.edges.keys():
@@ -270,7 +291,7 @@ class GraphGui:
         tur.ht()
         tur.pu()
         tur.goto(300, 20)
-        tur.write(str(order), font=("Arial", 10, "normal"))
+        tur.write(len(order[0]), font=("Arial", 10, "normal"))
         tur.goto(300, 0)
         tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
         sleep(1)
@@ -283,7 +304,7 @@ class GraphGui:
         turtle.onkeypress(self.draw, 'r')
         turtle.listen()
         self.busy = False
-
+        
     def dfs(self):
         visited = ()
         gwi = {}
