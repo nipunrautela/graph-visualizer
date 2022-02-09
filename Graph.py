@@ -109,13 +109,15 @@ class Graph(GraphInterface):
     def findShortestPath(self, start, destination):
             
         def addNeighbours(currNode):
+            changed = False
             for node in self._graph[currNode].keys():
                 if node not in order:
                     order.append(node)
-            currNode = order[-1]
-            if len(order) != len(unvisited):
+                    print(order)
+                    currNode = order[-1]
+                    changed = True
+            if len(order) != len(unvisited) and changed:
                 addNeighbours(currNode)
-                
         
         def dijkstraAlgorithm(currNode):
             for node,weight in (self._graph[currNode]).items():
@@ -128,6 +130,7 @@ class Graph(GraphInterface):
         for node in unvisited:
             shortestPaths[node] = -1 if node != start else 0  #set path lengths to -1 to represent infiniy
         currNode = start
+        print(self._graph)
         
         order = [start]
         addNeighbours(currNode)
@@ -136,13 +139,21 @@ class Graph(GraphInterface):
         
         for node in order:
             dijkstraAlgorithm(node)
-
+ 
         finalPath = [destination]        
         while finalPath[-1] != start:
             finalPath.append(shortestRoutes[finalPath[-1]])
         
         finalPath.reverse()
-        return([order,finalPath])
+        print([order,finalPath])
+
+    def updateWeight(self, v1, v2, weight):
+        self._graph[v1][v2] = weight
+        self._graph[v2][v1] = weight
+
+    @property
+    def graph(self):
+        return self._graph
         
     @property
     def graph(self):
