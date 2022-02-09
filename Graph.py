@@ -145,7 +145,7 @@ class Graph(GraphInterface):
             finalPath.append(shortestRoutes[finalPath[-1]])
         
         finalPath.reverse()
-        print([order,finalPath])
+        return([order,finalPath])
 
     def updateWeight(self, v1, v2, weight):
         self._graph[v1][v2] = weight
