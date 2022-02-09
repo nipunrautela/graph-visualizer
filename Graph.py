@@ -55,22 +55,39 @@ class Graph(GraphInterface):
             l.append((v2, i))
         return tuple(l)
 
-    def bfs(visited, graph, node):
-        visited = [] 
-        queue = []
-        path=[]
-        visited.append(node)
-        queue.append(node)
+    def BFS(self, start, destination):
+        if start not in self._graph or destination not in self._graph:
+            return False
+        visited = {}  # Dictionary to maintain a note of visited Nodes
+        for i in self._graph:
+            visited[i] = 0
+        parent = {}  # Dictionary to backtrack and find the route
+        # And the no of steps needed to get to Destination Node from Start Node
+        for i in self._graph:
+            parent[i] = None
+        Queue = [start]  # Queue used for BFS
+        visited[start] = 1
+        parent[start] = -1
+        nodes = []
+        while Queue:
+            current = Queue.pop(0)
+            nodes.append(current)
+            if current == destination:
+                break
+            for i in self._graph[current]:
+                if visited[i] == 0:
+                    Queue.append(i)
+                    visited[i] = 1
+                    parent[i] = current
 
-        while queue:
-            s = queue.pop(0) 
-            path.append(s)
-
-            for neighbour in graph[s]:
-                if neighbour not in visited:
-                    visited.append(neighbour)
-                    queue.append(neighbour)
-        return path
+        cur = destination
+        path = []
+        while parent[cur] != -1:
+            path.append(cur)
+            cur = parent[cur]
+        path.append(start)
+        path.reverse()
+        return [nodes, path]
             
     def dfs_non(self,graph, source):
        path = []
