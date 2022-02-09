@@ -40,7 +40,7 @@ class GraphInterface:
         pass
     
     @abstractmethod
-    def FindShortestPath(self, start, destination):
+    def findShortestPath(self, start, destination):
         pass
     
     
