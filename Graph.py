@@ -118,12 +118,10 @@ class Graph(GraphInterface):
                 
         
         def dijkstraAlgorithm(currNode):
-            print(f"Running algo on {currNode}")
             for node,weight in (self._graph[currNode]).items():
                 if shortestPaths[node] == -1 or shortestPaths[node] > weight + shortestPaths[currNode]:                   
                     shortestPaths[node] = weight + shortestPaths[currNode]
                     shortestRoutes[node] = currNode
-            print(shortestPaths)
                 
         unvisited = [node for node in self._graph.keys()]
         shortestPaths = {}
@@ -133,7 +131,6 @@ class Graph(GraphInterface):
         
         order = [start]
         addNeighbours(currNode)
-        print(order)
         
         shortestRoutes = {}
         
