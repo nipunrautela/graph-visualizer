@@ -1,4 +1,3 @@
-# author Piyush Mudgal
 from GraphInterface import GraphInterface
 
 
@@ -56,53 +55,35 @@ class Graph(GraphInterface):
             l.append((v2, i))
         return tuple(l)
 
-    def BFS(self, start, destination):
-        if start not in self._graph or destination not in self._graph:
-            return False
-        visited = {}  # Dictionary to maintain a note of visited Nodes
-        for i in self._graph:
-            visited[i] = 0
-        parent = {}  # Dictionary to backtrack and find the route
-        # And the no of steps needed to get to Destination Node from Start Node
-        for i in self._graph:
-            parent[i] = None
-        Queue = [start]  # Queue used for BFS
-        visited[start] = 1
-        parent[start] = -1
-        # nodes = [start]
-        while Queue:
-            current = Queue.pop(0)
-            if current == destination:
-                break
-            for i in self._graph[current]:
-                if visited[i] == 0:
-                    Queue.append(i[0])
-                    visited[i] = 1
-                    parent[i] = current
+    def bfs(visited, graph, node):
+        visited = [] 
+        queue = []
+        path=[]
+        visited.append(node)
+        queue.append(node)
 
-        cur = destination
-        path = []
-        while parent[cur] != -1:
-            path.append(cur)
-            cur = parent[cur]
-        path.append(start)
-        path.reverse()
+        while queue:
+            s = queue.pop(0) 
+            path.append(s)
+
+            for neighbour in graph[s]:
+                if neighbour not in visited:
+                    visited.append(neighbour)
+                    queue.append(neighbour)
         return path
-
-    def DFS(self, start, destination):
-        stack = [[start]]
-        visited = [0]
-        while stack:
-            path = stack.pop(0)
-            node = path[-1]
-            if node == destination:
-                return path
-            children = self._graph[node]
-            for child in children:
-                if child not in visited:
-                    newPath = path + [child]
-                    stack.insert(0, newPath)
-                    visited.append(child)
+            
+    def dfs_non(self,graph, source):
+       path = []
+       stack = [source]
+       while(len(stack) != 0):
+           s = stack.pop()
+           if s not in path:
+               path.append(s)
+           if s not in graph:
+               continue
+           for neighbor in graph[s]:
+               stack.append(neighbor)
+       return path
 
     def updateWeight(self, v1, v2, weight):
         self._graph[v1][v2] = weight

@@ -1,6 +1,4 @@
-#author Nipun Rautela
 from time import time, sleep
-import asyncio
 
 from Graph import Graph
 import turtle
@@ -131,7 +129,7 @@ class GraphGui:
 
         self.stats = Stats()
 
-    #author Subhadip Nandi
+    # author Subhadip Nandi
     def _create_node(self, x, y):
         # if len(self.nodes) % 3 == 0:
         #     self.turtle = turtle.Turtle()
@@ -141,20 +139,20 @@ class GraphGui:
         self.nodes[new_node.id] = new_node
         return new_node.id
 
-    #author Subhadip Nandi
+    # author Subhadip Nandi
     def _create_edge(self, n1, n2):
         if n1.id > n2.id:
             temp = n1
             n1 = n2
             n2 = temp
         new_edge = Edge(n1, n2, self.turtle)
-        weight = turtle.numinput("Edge Weight", "Enter edge weight")
-        # weight = 5
+        # weight = turtle.numinput("Edge Weight", "Enter edge weight")
+        weight = 5
         self.graph.addEdge(n1.id, n2.id, weight)
         self.edges[str(n1.id) + ',' + str(n2.id)] = new_edge
         turtle.listen()
 
-    #author Subhadip Nandi
+    # author Subhadip Nandi
     def delete(self):
         if self.selected_node is not None:
             self.graph.deleteNode(self.selected_node)
@@ -286,53 +284,55 @@ class GraphGui:
         turtle.listen()
         self.busy = False
 
-        #author Piyush Mudgal
     def dfs(self):
-        self.busy = True
-        try:
-            starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
-            to_find = int(turtle.numinput("End Node", "Which node to find", 0))
-        except TypeError:
-            self.busy = False
-            return
+        visited = ()
+        gwi = {}
+        po = []
+        lo = list(self.nodes.keys())
 
-        order = self.graph.DFS(starting_node, to_find)
+        for j in range(0, len(lo)):
+            lo[j] = int(lo[j])
+
+        starting_node = self.selected_node
 
         if self.selected_node is not None:
-            self.nodes[self.selected_node].selected = False
-            self.selected_node = None
-        if self.selected_edge is not None:
-            self.edges[self.selected_edge].selected = False
-            self.selected_edge = None
+            li = list(self.edges.keys())
+            c = 20
 
-        for i in order:
-            self.selected_node = i
-            self.nodes[self.selected_node].selected = True
-            for k in self.edges.keys():
-                self.edges[k].draw()
-            for k in self.nodes.keys():
-                self.nodes[k].draw()
-            sleep(1)
-            turtle.update()
+            for i in li:
+                a = []
+                a = i.split(',')
 
-        tur = self.turtle
-        tur.ht()
-        tur.pu()
-        tur.goto(300, 20)
-        tur.write(str(order), font=("Arial", 10, "normal"))
-        tur.goto(300, 0)
-        tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
-        sleep(1)
+                for j in range(0, len(a)):
+                    a[j] = int(a[j])
 
-        self.selected_node = None
-        for k in self.nodes.keys():
-            self.nodes[k].selected = False
+                po.append(a)
 
-        turtle.onkeypress(self.dfs, 'x')
-        turtle.onkeypress(self.draw, 'r')
-        turtle.listen()
-        self.busy = False
-        
+            for k in range(0, len(lo)):
+                lem = []
+                for j in range(0, len(po)):
+                    a1 = int(lo[k])
+                    a2 = int(po[j][0])
+                    if a1 == a2:
+                        b = lo[k]
+                        lem.append(po[j][1])
+
+                gwi[lo[k]] = lem
+
+            ppa = []
+            ppa = self.graph.dfs_non(gwi, starting_node)
+
+            for i in range(0, len(ppa)):
+                for j in range(0, len(lo)):
+                    if lo[i] == ppa[i]:
+                        self.turtle.goto(self.nodes[j].x, self.nodes[j].y-10)
+                        self.turtle.write(j, font=("Arial", 15, "normal"))
+                        sleep(1)
+            sleep(3)
+            turtle.listen()
+            self.draw()
+            return
+
     def AnimateShortestPath(self):
         pass
 
