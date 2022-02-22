@@ -2,7 +2,7 @@ from GraphInterface import GraphInterface
 
 
 class Graph(GraphInterface):
-    _graph = {}  # Private Variable created by the use of '_'
+    _graph = {0:{1:0, 2:0, 3:0}}  # Private Variable created by the use of '_'
 
     # Function to add a New Node to Graph
     def addNode(self, node):
@@ -89,18 +89,37 @@ class Graph(GraphInterface):
         path.reverse()
         return [nodes, path]
 
-    def DFS(self, graph, source):
-        path = [[0, 1, 2, 3, 4], [0, 2, 4]]
-        # stack = [source]
-        # while (len(stack) != 0):
-        #     s = stack.pop()
-        #     if s not in path:
-        #         path.append(s)
-        #     if s not in graph:
-        #         continue
-        #     for neighbor in graph[s]:
-        #         stack.append(neighbor)
-        return path
+    def DFS(self, start, destination):
+        
+        def depthFirstSearch(node):
+            visited.append(node)
+            for neighbour in self._graph[node].keys():
+                if neighbour not in stack and neighbour not in visited:
+                    stack.append(neighbour)
+                    previous[neighbour] = node
+                if neighbour not in order:
+                    order.append(neighbour)    
+            if stack:
+                node = stack.pop(0)
+                depthFirstSearch(node)
+        
+        visited = []
+        stack = []
+        order = [start]
+        previous = {}
+        
+        depthFirstSearch(start)
+        
+        finalPath = [destination]
+        
+        current = destination
+        while current != start:
+            finalPath.append(previous[current])
+            current = previous[current]
+        
+        finalPath.reverse()
+        
+        return([order,finalPath])
 
     def findShortestPath(self, start, destination):
 
