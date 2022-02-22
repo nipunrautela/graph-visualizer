@@ -3,6 +3,7 @@ from time import time, sleep
 from Graph import Graph
 import turtle
 from math import sqrt
+import pandas as pd
 
 
 class Stats:
@@ -307,53 +308,34 @@ class GraphGui:
 
     # Chirag C
     def dfs(self):
-        visited = ()
-        gwi = {}
-        po = []
-        lo = list(self.nodes.keys())
-
-        for j in range(0, len(lo)):
-            lo[j] = int(lo[j])
-
-        starting_node = self.selected_node
+        starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+        to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        order=[]
+        order=self.graph.DFS(starting_node, to_find)
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+            
+        for i in order[0]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
 
         if self.selected_node is not None:
-            li = list(self.edges.keys())
-            c = 20
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
 
-            for i in li:
-                a = []
-                a = i.split(',')
+        for i in order[1]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(0.2)
 
-                for j in range(0, len(a)):
-                    a[j] = int(a[j])
-
-                po.append(a)
-
-            for k in range(0, len(lo)):
-                lem = []
-                for j in range(0, len(po)):
-                    a1 = int(lo[k])
-                    a2 = int(po[j][0])
-                    if a1 == a2:
-                        b = lo[k]
-                        lem.append(po[j][1])
-
-                gwi[lo[k]] = lem
-
-            ppa = []
-            ppa = self.graph.dfs_non(gwi, starting_node)
-
-            for i in range(0, len(ppa)):
-                for j in range(0, len(lo)):
-                    if lo[i] == ppa[i]:
-                        self.turtle.goto(self.nodes[j].x, self.nodes[j].y-10)
-                        self.turtle.write(j, font=("Arial", 15, "normal"))
-                        sleep(1)
-            sleep(3)
-            turtle.listen()
-            self.draw()
-            return
 
     def AnimateShortestPath(self):
         pass
@@ -372,8 +354,18 @@ class GraphGui:
             self.edges[k].draw()
         for k in self.nodes.keys():
             self.nodes[k].draw()
-
-
+    
+    # Chirag C     
+    def excel(self):
+        #path = r'C:\Users\alex\Desktop\file2.csv'
+        path = turtle.textinput("Path for csv file", "Enter the path for the csv location")
+        data=self.graph._graph    
+        for i in range(len(data)):
+            for j in range(len(data)):
+                if j not in data[i].keys():
+                    data[i][j]=-1
+        pd.DataFrame(data).to_csv(path)
+     
 def main():
     turtle.tracer(0, 0)
     turtle.speed('fastest')
@@ -388,6 +380,7 @@ def main():
     turtle.onkeypress(gui.bfs, 'b')
     turtle.onkeypress(gui.delete, 'd')
     turtle.onkeypress(gui.dfs, 'x')
+    turtle.onkeypress(gui.excel, 't')
     screen.listen()
     screen.cv.unbind("<Motion>")
     gui.draw()
