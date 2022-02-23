@@ -1,5 +1,5 @@
 from GraphInterface import GraphInterface
-
+from queue import PriorityQueue
 
 class Graph(GraphInterface):
     _graph = {}  # Private Variable created by the use of '_'
