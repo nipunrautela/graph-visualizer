@@ -555,6 +555,8 @@ def main():
     turtle.onkeypress(gui.delete, 'd')
     turtle.onkeypress(gui.dfs, 'x')
     turtle.onkeypress(gui.excel, 't')
+    turtle.onkeypress(gui.AnimateShortestPath,'j')
+    turtle.onkeypress(gui.A_star,'a')
     screen.listen()
     screen.cv.unbind("<Motion>")
     gui.draw()
