@@ -167,6 +167,9 @@ class Graph(GraphInterface):
         self._graph[v1][v2] = weight
         self._graph[v2][v1] = weight
 
+    def a_star(self, coords: dict):
+        pass
+
     @property
     def graph(self):
         return self._graph
