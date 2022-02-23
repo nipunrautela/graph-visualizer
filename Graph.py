@@ -145,7 +145,6 @@ class Graph(GraphInterface):
         for node in unvisited:
             shortestPaths[node] = -1 if node != start else 0  # set path lengths to -1 to represent infiniy
         currNode = start
-        # print(self._graph)
 
         order = [start]
         addNeighbours(currNode)
@@ -167,8 +166,41 @@ class Graph(GraphInterface):
         self._graph[v1][v2] = weight
         self._graph[v2][v1] = weight
 
-    def a_star(self, coords: dict):
-        pass
+    #Shatakshi
+    def aStarSearch(self, start, goal, coords, distType=0):
+        nodes=[]
+        if distType==0:
+            def heuristic(a, b):
+                return (((a[0]-b[0])**2) + ((a[1]-b[1])**2))**0.5
+        else:
+            def heuristic(a, b):
+                return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+        front = PriorityQueue()
+        front.put(start,0)
+        parent = {start: None}
+        cost_so_far = {start: 0}
+
+        while not front.empty():
+            current = front.get()
+            nodes.append(current)
+            if current == goal:
+                break
+
+            for i in self._graph[current]:
+                new_cost = cost_so_far[current] + heuristic(coords[current], coords[goal])+self._graph[current][i]
+                if i not in cost_so_far or new_cost < cost_so_far[i]:
+                    cost_so_far[i] = new_cost
+                    priority = new_cost + heuristic(coords[goal], coords[i])
+                    front.put(i,priority)
+                    parent[i] = current
+        current=goal
+        path=[current]
+        while(current!=start):
+            current=parent[current]
+            path.append(current)
+        path.reverse()
+        return [nodes,path]
 
     @property
     def graph(self):
