@@ -305,22 +305,36 @@ class GraphGui:
         turtle.onkeypress(self.draw, 'r')
         turtle.listen()
         self.busy = False
-
-    # Chirag C
+       
+    # Piyush
     def dfs(self):
-        starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
-        to_find = int(turtle.numinput("End Node", "Which node to find", 0))
-        order=[]
-        order=self.graph.DFS(starting_node, to_find)
+        self.busy = True
+        try:
+            starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+            to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        except TypeError:
+            self.busy = False
+            return
+
+        order = self.graph.DFS(starting_node, to_find)
+
         if self.selected_node is not None:
             self.nodes[self.selected_node].selected = False
             self.selected_node = None
-            
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
         for i in order[0]:
             self.selected_node = i
             self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
             for k in self.nodes.keys():
                 self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
         self.selected_node = None
         for k in self.nodes.keys():
             self.nodes[k].selected = False
@@ -328,17 +342,177 @@ class GraphGui:
         if self.selected_node is not None:
             self.nodes[self.selected_node].selected = False
             self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
 
         for i in order[1]:
             self.selected_node = i
             self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
             for k in self.nodes.keys():
                 self.nodes[k].draw()
-            sleep(0.2)
+            sleep(1)
+            turtle.update()
 
+        tur = self.turtle
+        tur.ht()
+        tur.pu()
+        tur.goto(300, 20)
+        tur.write(len(order[0]), font=("Arial", 10, "normal"))
+        tur.goto(300, 0)
+        tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
 
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
+
+        turtle.onkeypress(self.dfs, 'x')
+        turtle.onkeypress(self.draw, 'r')
+        turtle.listen()
+        self.busy = False
+    #Shatakshi
+    def getCoords(self):
+        coords = {}
+        for i in self.nodes:
+            coords[i]=(self.nodes[i].x, self.nodes[i].y)
+        return coords
+    #Subhadip and Piyush
+    def A_star(self):
+        self.busy = True
+        try:
+            starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+            to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+            flag=int(turtle.numinput("Enter Preference For Heuristic Value Calculation", 
+            "Enter 0 for Euclidean, and 1 for Manhattan: ", 0))
+        except TypeError:
+            self.busy = False
+            return
+
+        order = self.graph.aStarSearch(starting_node, to_find,self.getCoords(),flag)
+
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
+        for i in order[0]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
+
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
+        for i in order[1]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
+        tur = self.turtle
+        tur.ht()
+        tur.pu()
+        tur.goto(300, 20)
+        tur.write(len(order[0]), font=("Arial", 10, "normal"))
+        tur.goto(300, 0)
+        tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
+
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
+
+        turtle.onkeypress(self.A_star, 'a')
+        turtle.onkeypress(self.draw, 'r')
+        turtle.listen()
+        self.busy = False
+    
+    #Piyush and Subhadip
     def AnimateShortestPath(self):
-        pass
+        self.busy = True
+        try:
+            starting_node = int(turtle.numinput("Starting node", "Enter Starting node: ", 0))
+            to_find = int(turtle.numinput("End Node", "Which node to find", 0))
+        except TypeError:
+            self.busy = False
+            return
+
+        order = self.graph.FindShortestPath(starting_node, to_find)
+
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
+        for i in order[0]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
+
+        if self.selected_node is not None:
+            self.nodes[self.selected_node].selected = False
+            self.selected_node = None
+        if self.selected_edge is not None:
+            self.edges[self.selected_edge].selected = False
+            self.selected_edge = None
+
+        for i in order[1]:
+            self.selected_node = i
+            self.nodes[self.selected_node].selected = True
+            for k in self.edges.keys():
+                self.edges[k].draw()
+            for k in self.nodes.keys():
+                self.nodes[k].draw()
+            sleep(1)
+            turtle.update()
+
+        tur = self.turtle
+        tur.ht()
+        tur.pu()
+        tur.goto(300, 20)
+        tur.write(len(order[0]), font=("Arial", 10, "normal"))
+        tur.goto(300, 0)
+        tur.write("resuming program in 1 second", font=("Arial", 10, "normal"))
+
+        self.selected_node = None
+        for k in self.nodes.keys():
+            self.nodes[k].selected = False
+
+        turtle.onkeypress(self.bfs, 'j')
+        turtle.onkeypress(self.draw, 'r')
+        turtle.listen()
+        self.busy = False
 
     def draw(self):
         try:
