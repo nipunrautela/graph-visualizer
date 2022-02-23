@@ -2,7 +2,7 @@ from GraphInterface import GraphInterface
 
 
 class Graph(GraphInterface):
-    _graph = {0:{1:0, 2:0, 3:0}}  # Private Variable created by the use of '_'
+    _graph = {}  # Private Variable created by the use of '_'
 
     # Function to add a New Node to Graph
     def addNode(self, node):
