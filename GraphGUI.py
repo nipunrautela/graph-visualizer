@@ -306,7 +306,6 @@ class GraphGui:
         turtle.listen()
         self.busy = False
        
-    # Piyush
     def dfs(self):
         self.busy = True
         try:
@@ -378,7 +377,7 @@ class GraphGui:
         for i in self.nodes:
             coords[i]=(self.nodes[i].x, self.nodes[i].y)
         return coords
-    #Subhadip and Piyush
+    #Subhadip
     def A_star(self):
         self.busy = True
         try:
@@ -447,7 +446,7 @@ class GraphGui:
         turtle.listen()
         self.busy = False
     
-    #Piyush and Subhadip
+    #Subhadip
     def AnimateShortestPath(self):
         self.busy = True
         try:
@@ -529,7 +528,7 @@ class GraphGui:
         for k in self.nodes.keys():
             self.nodes[k].draw()
     
-    # Chirag C     
+       
     def excel(self):
         #path = r'C:\Users\alex\Desktop\file2.csv'
         path = turtle.textinput("Path for csv file", "Enter the path for the csv location")

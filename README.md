@@ -1,5 +1,5 @@
-# Graph-GUI
-Graphical Interface for creation of graph data structures 
+# Graph Visualizer
+Graphical Interface for creation of graph data structures and performing Different kinds of searches
 
 Run the GraphGUI file.
 
